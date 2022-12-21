@@ -4,8 +4,8 @@
 
 import torch.nn as nn
 
-from exps.model.tal_head import TALHead
-from exps.model.dfp_pafpn import DFPPAFPN
+from caryle.streamyolo.StreamYOLO.exps.model.tal_head import TALHead
+from caryle.streamyolo.StreamYOLO.exps.model.dfp_pafpn import DFPPAFPN
 
 
 class YOLOX(nn.Module):

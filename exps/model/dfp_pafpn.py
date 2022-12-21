@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from exps.model.darknet import CSPDarknet
+from caryle.streamyolo.StreamYOLO.exps.model.darknet import CSPDarknet
 from yolox.models.network_blocks import BaseConv, CSPLayer, DWConv
 
 
