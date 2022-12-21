@@ -11,8 +11,8 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.depth = 0.67
         self.width = 0.75
-        self.data_num_workers = 6
-        self.num_classes = 8
+        self.data_num_workers = 0
+        self.num_classes = 7
         self.input_size = (600, 960)  # (h,w)
         self.random_size = (50, 70)
         self.test_size = (600, 960)
@@ -28,7 +28,7 @@ class Exp(MyExp):
 
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
-        self.output_dir = '/data/output/stream_yolo'
+        self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo'
 
     def get_model(self):
         from exps.model.yolox import YOLOX
