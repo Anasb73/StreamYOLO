@@ -186,7 +186,7 @@ class Exp(MyExp):
 
 
     def get_trainer(self, args):
-        from exps.train_utils.double_trainer import Trainer
+        from caryle.streamyolo.StreamYOLO.exps.train_utils.double_trainer import Trainer
         trainer = Trainer(self, args)
         # NOTE: trainer shouldn't be an attribute of exp object
         return trainer
