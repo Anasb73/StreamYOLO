@@ -65,7 +65,7 @@ class Exp(MyExp):
         )
 
         dataset = ONE_ARGOVERSEDataset(
-            data_dir='/data',
+            data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse',
             json_file=self.train_ann,
             name='train',
             img_size=self.input_size,
