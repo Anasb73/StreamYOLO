@@ -31,9 +31,9 @@ class Exp(MyExp):
         self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo'
 
     def get_model(self):
-        from exps.model.yolox import YOLOX
-        from exps.model.dfp_pafpn import DFPPAFPN
-        from exps.model.tal_head import TALHead
+        from caryle.streamyolo.StreamYOLO.exps.model.yolox import YOLOX
+        from caryle.streamyolo.StreamYOLO.exps.model.dfp_pafpn import DFPPAFPN
+        from caryle.streamyolo.StreamYOLO.exps.model.tal_head import TALHead
         import torch.nn as nn
 
         def init_yolo(M):
@@ -54,9 +54,9 @@ class Exp(MyExp):
         return self.model
 
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, local_rank=0, cache_img=False):
-        from exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
-        from exps.data.tal_flip_mosaicdetection import MosaicDetection
-        from exps.data.data_augment_flip import DoubleTrainTransform
+        from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
+        from caryle.streamyolo.StreamYOLO.exps.data.tal_flip_mosaicdetection import MosaicDetection
+        from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleTrainTransform
         from yolox.data import (
             YoloBatchSampler,
             DataLoader,
@@ -112,8 +112,8 @@ class Exp(MyExp):
         return train_loader
 
     def get_eval_loader(self, batch_size, is_distributed, testdev=False):
-        from exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
-        from exps.data.data_augment_flip import DoubleValTransform
+        from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
+        from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleValTransform
 
         valdataset = ONE_ARGOVERSEDataset(
             data_dir='/data',
@@ -171,7 +171,7 @@ class Exp(MyExp):
         return inputs, targets
 
     def get_evaluator(self, batch_size, is_distributed, testdev=False):
-        from exps.evaluators.onex_stream_evaluator import ONEX_COCOEvaluator
+        from caryle.streamyolo.StreamYOLO.exps.evaluators.onex_stream_evaluator import ONEX_COCOEvaluator
 
         val_loader = self.get_eval_loader(batch_size, is_distributed, testdev)
         evaluator = ONEX_COCOEvaluator(
