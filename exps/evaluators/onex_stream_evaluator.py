@@ -188,7 +188,8 @@ class ONEX_COCOEvaluator:
             for ind in range(bboxes.shape[0]):
                 label = self.dataloader.dataset.class_ids[int(cls[ind])]
 
-                if int(img_id) in [15060,15061]:
+                #if int(img_id) in [15060,15061]:
+                if int(img_id) in [34332,34333]:
                     continue
                 elif self.dataloader.dataset.coco.dataset['images'][int(img_id+1)]['fid'] == 0:
                     continue

@@ -12,7 +12,7 @@ class Exp(MyExp):
         super(Exp, self).__init__()
         self.depth = 0.33
         self.width = 0.50
-        self.data_num_workers = 0
+        self.data_num_workers = 8
         self.num_classes = 7
         self.input_size = (600, 960)  # (h,w)
         self.random_size = (50, 70)
@@ -29,8 +29,8 @@ class Exp(MyExp):
 
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
-        self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
-        #self.output_dir = '/work1/gitlab-runner-docker-data/yolox_s'
+        #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
+        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_2'
 
     def get_model(self):
         from caryle.streamyolo.StreamYOLO.exps.model.yolox import YOLOX
