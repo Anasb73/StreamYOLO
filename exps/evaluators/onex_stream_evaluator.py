@@ -26,7 +26,7 @@ import time
 
 from tabulate import tabulate
 import numpy as np
-from exps.data.argoverse_class import ARGOVERSE_CLASSES
+from caryle.streamyolo.StreamYOLO.exps.data.argoverse_class import ARGOVERSE_CLASSES
 
 def per_class_mAP_table(coco_eval, class_names=ARGOVERSE_CLASSES, headers=["class", "AP"], colums=2):
     per_class_mAP = {}
