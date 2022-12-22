@@ -66,7 +66,7 @@ class Exp(MyExp):
 
         dataset = ONE_ARGOVERSEDataset(
             data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse',
-            json_file=self.train_ann,
+            json_file="train.json",
             name='train',
             img_size=self.input_size,
             preproc=DoubleTrainTransform(max_labels=50, hsv=False, flip=True),
@@ -116,7 +116,7 @@ class Exp(MyExp):
         from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleValTransform
 
         valdataset = ONE_ARGOVERSEDataset(
-            data_dir='/data',
+            data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse',
             json_file='val.json',
             name='val',
             img_size=self.test_size,
