@@ -2,13 +2,12 @@
 # -*- coding:utf-8 -*-
 # Copyright (c) Megvii, Inc. and its affiliates.
 
-ARGOVERSE_CLASSES = (
-    "person",
-    "bicycle",
+ARGOVERSE_CLASSES =  ( 
     "car",
-    "motorcycle",
-    "bus",
+    "pedestrian",
+    "cyclist",
+    "motorcyclist",
     "truck",
-    "traffic light",
-    "stop sign",
+    "bus",
+    "car_van",
 )
