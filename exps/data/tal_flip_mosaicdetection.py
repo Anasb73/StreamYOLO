@@ -4,9 +4,8 @@
 
 import cv2
 import numpy as np
-
 from yolox.utils import adjust_box_anns
-
+import math
 import random
 
 from yolox.data.datasets.datasets_wrapper import Dataset
@@ -194,7 +193,14 @@ class MosaicDetection(Dataset):
             indices = [idx] + [random.randint(0, len(self._dataset) - 1) for _ in range(3)]
 
             for i_mosaic, index in enumerate(indices):
-                img, _labels, _, _ = self._dataset.pull_item(index)
+                # print(self._dataset.pull_item(index)[0].shape)
+                # print(self._dataset.pull_item(index)[1].shape)
+                # print(self._dataset.pull_item(index)[2])
+                # print(self._dataset.pull_item(index)[3])
+                # print(self._dataset.pull_item(index)[4])
+                # print(self._dataset.pull_item(index)[5])
+                #img, _labels, _, _, = self._dataset.pull_item(index)
+                img, _labels, _, _, = self._dataset.__getitem__(index.item())
                 h0, w0 = img.shape[:2]  # orig hw
                 scale = min(1. * input_h / h0, 1. * input_w / w0)
                 img = cv2.resize(
@@ -262,8 +268,18 @@ class MosaicDetection(Dataset):
         cp_labels = []
         while len(cp_labels) == 0:
             cp_index = random.randint(0, self.__len__() - 1)
-            _, cp_labels, _, _ = self._dataset.pull_item(cp_index)
-        img, cp_labels, _, _ = self._dataset.pull_item(cp_index)
+            #print(len(self._dataset.pull_item(cp_index)))
+            #_, cp_labels, _, _ = self._dataset.pull_item(cp_index)
+            _,_,cp_labels,_,_,_ = self._dataset.pull_item(cp_index)
+            #print(cp_labels)
+        # print(self._dataset.pull_item(cp_index)[0].shape)
+        # print(self._dataset.pull_item(cp_index)[1].shape)
+        # print(self._dataset.pull_item(cp_index)[2])
+        # print(self._dataset.pull_item(cp_index)[3])
+        # print(self._dataset.pull_item(cp_index)[4])
+        # print(self._dataset.pull_item(cp_index)[5])   
+        img, _ , cp_labels,_,  _, _ = self._dataset.pull_item(cp_index)
+        #img, cp_labels, _, _ = self._dataset.pull_item(cp_index)
 
         if len(img.shape) == 3:
             cp_img = np.ones((input_dim[0], input_dim[1], 3), dtype=np.uint8) * 114

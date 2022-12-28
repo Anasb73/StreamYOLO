@@ -17,7 +17,7 @@ class Exp(MyExp):
         self.input_size = (600, 960)  # (h,w)
         self.random_size = (50, 70)
         self.test_size = (600, 960)
-        #
+        self.enable_mixup = False
         self.basic_lr_per_img = 0.001 / 64.0
 
         self.warmup_epochs = 1
@@ -31,6 +31,8 @@ class Exp(MyExp):
 
         #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
         self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug'
+        #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOwithaugmentation'
+
 
     def get_model(self):
         from caryle.streamyolo.StreamYOLO.exps.model.yolox import YOLOX
@@ -58,6 +60,7 @@ class Exp(MyExp):
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, local_rank=0, cache_img=False):
         from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
         from caryle.streamyolo.StreamYOLO.exps.data.tal_flip_mosaicdetection import MosaicDetection
+        #from caryle.streamyolo.StreamYOLO.exps.data.mosaicdetection import MosaicDetection
         from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleTrainTransform
         from yolox.data import (
             YoloBatchSampler,
@@ -74,7 +77,6 @@ class Exp(MyExp):
             preproc=DoubleTrainTransform(max_labels=50, hsv=False, flip=True),
             cache=cache_img,
         )
-
         dataset = MosaicDetection(dataset,
                                   mosaic=not no_aug,
                                   img_size=self.input_size,

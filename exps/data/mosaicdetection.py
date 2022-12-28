@@ -9,8 +9,9 @@ from yolox.utils import adjust_box_anns
 
 import random
 
-from yolox.data.data_augment import box_candidates, random_perspective
-from yolox.data.datasets.datasets_wrapper import Dataset
+#from caryle.yolox.YOLOX.yolox.data.data_augment import box_candidates, random_perspective
+from caryle.yolox.YOLOX.yolox.data.data_augment import random_affine
+from caryle.yolox.YOLOX.yolox.data.datasets.datasets_wrapper import Dataset
 
 
 def get_mosaic_coordinate(mosaic_image, mosaic_index, xc, yc, w, h, input_h, input_w):
