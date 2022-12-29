@@ -9,6 +9,7 @@ import math
 import random
 
 from yolox.data.datasets.datasets_wrapper import Dataset
+from copy import deepcopy
 
 def box_candidates(box1, box2, wh_thr=2, ar_thr=20, area_thr=0.2):
     # box1(4,n), box2(4,n)
@@ -180,8 +181,10 @@ class MosaicDetection(Dataset):
 
     @Dataset.mosaic_getitem
     def __getitem__(self, idx):
+        #print(self.enable_mosaic)
         if self.enable_mosaic and random.random() < self.mosaic_prob:
-            mosaic_labels = []
+            mosaic_labels1 = []
+            mosaic_labels2 = []
             input_dim = self._dataset.input_dim
             input_h, input_w = input_dim[0], input_dim[1]
 
@@ -200,44 +203,79 @@ class MosaicDetection(Dataset):
                 # print(self._dataset.pull_item(index)[4])
                 # print(self._dataset.pull_item(index)[5])
                 #img, _labels, _, _, = self._dataset.pull_item(index)
-                img, _labels, _, _, = self._dataset.__getitem__(index.item())
+                #img, _, _labels, _, _ ,_ = self._dataset.pull_item(index)
+                img, support_image, _labels, _support_labels, _, _ = self._dataset.pull_item(index)
+                #img = np.concatenate((img, support_img), axis=0)
+                #print(target)
+                #print(support_target)
+                #_labels = (target,support_target)
+                #_labels = np.concatenate((target, support_target))
+                #print(_labels)
                 h0, w0 = img.shape[:2]  # orig hw
+                h1,w1 = support_image.shape[:2]
                 scale = min(1. * input_h / h0, 1. * input_w / w0)
+                scale1 = min(1. * input_h / h1, 1. * input_w / w1)
                 img = cv2.resize(
                     img, (int(w0 * scale), int(h0 * scale)), interpolation=cv2.INTER_LINEAR
                 )
+                img1 = cv2.resize(
+                    support_image, (int(w1 * scale1), int(h1 * scale1)), interpolation=cv2.INTER_LINEAR
+                )
                 # generate output mosaic image
                 (h, w, c) = img.shape[:3]
+                (h1, w1, c1) = img1.shape[:3]
                 if i_mosaic == 0:
-                    mosaic_img = np.full((input_h * 2, input_w * 2, c), 114, dtype=np.uint8)
+                    mosaic_img1 = np.full((input_h * 2, input_w * 2, c), 114, dtype=np.uint8)
+                    mosaic_img2 = np.full((input_h * 2, input_w * 2, c), 114, dtype=np.uint8)
 
                 # suffix l means large image, while s means small image in mosaic aug.
                 (l_x1, l_y1, l_x2, l_y2), (s_x1, s_y1, s_x2, s_y2) = get_mosaic_coordinate(
-                    mosaic_img, i_mosaic, xc, yc, w, h, input_h, input_w
+                    mosaic_img1, i_mosaic, xc, yc, w, h, input_h, input_w
                 )
-
-                mosaic_img[l_y1:l_y2, l_x1:l_x2] = img[s_y1:s_y2, s_x1:s_x2]
+                (l1_x1, l1_y1, l1_x2, l1_y2), (s1_x1, s1_y1, s1_x2, s1_y2) = get_mosaic_coordinate(
+                    mosaic_img2, i_mosaic, xc, yc, w, h, input_h, input_w
+                )
+                mosaic_img1[l_y1:l_y2, l_x1:l_x2] = img[s_y1:s_y2, s_x1:s_x2]
+                mosaic_img2[l1_y1:l1_y2, l1_x1:l1_x2] = img[s1_y1:s1_y2, s1_x1:s1_x2]
                 padw, padh = l_x1 - s_x1, l_y1 - s_y1
 
-                labels = _labels.copy()
+                labels1 = _labels.copy()
+                labels2 = _support_labels.copy()
+                #labels = deepcopy(_labels)
                 # Normalized xywh to pixel xyxy format
                 if _labels.size > 0:
-                    labels[:, 0] = scale * _labels[:, 0] + padw
-                    labels[:, 1] = scale * _labels[:, 1] + padh
-                    labels[:, 2] = scale * _labels[:, 2] + padw
-                    labels[:, 3] = scale * _labels[:, 3] + padh
-                mosaic_labels.append(labels)
-
-            if len(mosaic_labels):
-                mosaic_labels = np.concatenate(mosaic_labels, 0)
-                np.clip(mosaic_labels[:, 0], 0, 2 * input_w, out=mosaic_labels[:, 0])
-                np.clip(mosaic_labels[:, 1], 0, 2 * input_h, out=mosaic_labels[:, 1])
-                np.clip(mosaic_labels[:, 2], 0, 2 * input_w, out=mosaic_labels[:, 2])
-                np.clip(mosaic_labels[:, 3], 0, 2 * input_h, out=mosaic_labels[:, 3])
-
-            mosaic_img, mosaic_labels = random_perspective(
-                mosaic_img,
-                mosaic_labels,
+                #if _labels != ():
+                    #for i in range(len(_labels)):
+                    labels1[:, 0] = scale * _labels[:, 0] + padw
+                    labels1[:, 1] = scale * _labels[:, 1] + padh
+                    labels1[:, 2] = scale * _labels[:, 2] + padw
+                    labels1[:, 3] = scale * _labels[:, 3] + padh
+                if _support_labels.size > 0:
+                #if _labels != ():
+                    #for i in range(len(_labels)):
+                    labels2[:, 0] = scale * _support_labels[:, 0] + padw
+                    labels2[:, 1] = scale * _support_labels[:, 1] + padh
+                    labels2[:, 2] = scale * _support_labels[:, 2] + padw
+                    labels2[:, 3] = scale * _support_labels[:, 3] + padh    
+                mosaic_labels1.append(labels1)
+                mosaic_labels2.append(labels2)
+                #mosaic_labels = [mosaic_labels1, mosaic_labels2]
+                #mosaic_img = np.concatenate((mosaic_img1,mosaic_img2),axis =0)
+            if len(mosaic_labels1):
+                mosaic_labels1 = np.concatenate(mosaic_labels1, 0)
+                np.clip(mosaic_labels1[:, 0], 0, 2 * input_w, out=mosaic_labels1[:, 0])
+                np.clip(mosaic_labels1[:, 1], 0, 2 * input_h, out=mosaic_labels1[:, 1])
+                np.clip(mosaic_labels1[:, 2], 0, 2 * input_w, out=mosaic_labels1[:, 2])
+                np.clip(mosaic_labels1[:, 3], 0, 2 * input_h, out=mosaic_labels1[:, 3])
+            if len(mosaic_labels2):
+                mosaic_labels2 = np.concatenate(mosaic_labels2, 0)
+                np.clip(mosaic_labels2[:, 0], 0, 2 * input_w, out=mosaic_labels2[:, 0])
+                np.clip(mosaic_labels2[:, 1], 0, 2 * input_h, out=mosaic_labels2[:, 1])
+                np.clip(mosaic_labels2[:, 2], 0, 2 * input_w, out=mosaic_labels2[:, 2])
+                np.clip(mosaic_labels2[:, 3], 0, 2 * input_h, out=mosaic_labels2[:, 3])
+            mosaic_img1, mosaic_labels1 = random_perspective(
+                mosaic_img1,
+                mosaic_labels1,
                 degrees=self.degrees,
                 translate=self.translate,
                 scale=self.scale,
@@ -245,16 +283,31 @@ class MosaicDetection(Dataset):
                 perspective=self.perspective,
                 border=[-input_h // 2, -input_w // 2],
             )  # border to remove
-
+            mosaic_img2, mosaic_labels2 = random_perspective(
+                mosaic_img2,
+                mosaic_labels2,
+                degrees=self.degrees,
+                translate=self.translate,
+                scale=self.scale,
+                shear=self.shear,
+                perspective=self.perspective,
+                border=[-input_h // 2, -input_w // 2],
+            ) 
             # -----------------------------------------------------------------
             # CopyPaste: https://arxiv.org/abs/2012.07177
             # -----------------------------------------------------------------
-            if self.enable_mixup and not len(mosaic_labels) == 0 and random.random() < self.mixup_prob:
-                mosaic_img, mosaic_labels = self.mixup(mosaic_img, mosaic_labels, self.input_dim)
-            mix_img, padded_labels = self.preproc(mosaic_img, mosaic_labels, self.input_dim)
-            img_info = (mix_img.shape[1], mix_img.shape[0])
+              
+            #mosaic_labels = [mosaic_labels1, mosaic_labels2]
+            #mosaic_img = np.concatenate((mosaic_img1,mosaic_img2),axis =0)
+            if self.enable_mixup and not len(mosaic_labels1) == 0 and random.random() < self.mixup_prob:
+                mosaic_img1, mosaic_labels1 = self.mixup(mosaic_img1, mosaic_labels1, self.input_dim)
+            if self.enable_mixup and not len(mosaic_labels2) == 0 and random.random() < self.mixup_prob:
+                mosaic_img1, mosaic_labels1 = self.mixup(mosaic_img1, mosaic_labels1, self.input_dim)    
+            mix_img1, mix_img2, padded_labels1, padded_labels2 = self.preproc((mosaic_img1,mosaic_img2), (mosaic_labels1,mosaic_labels2), self.input_dim)
+            #mix_img2, padded_labels2 = self.preproc(mosaic_img2, mosaic_labels2, self.input_dim)
+            img_info = (mix_img1.shape[1], mix_img1.shape[0])
 
-            return mix_img, padded_labels, img_info, np.array([idx])
+            return np.concatenate((mix_img1, mix_img2), axis=0), (padded_labels1, padded_labels2), img_info, np.array([idx])
 
         else:
             self._dataset._input_dim = self.input_dim
