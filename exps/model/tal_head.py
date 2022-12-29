@@ -209,6 +209,7 @@ class TALHead(nn.Module):
                 labels,
                 torch.cat(outputs, 1),
                 origin_preds,
+                #torch.tensor(origin_preds).cuda(), 
                 dtype=xin[0].dtype,
             )
         else:
@@ -427,15 +428,16 @@ class TALHead(nn.Module):
         ious_targets = ious_targets.squeeze(1)
         gamma = self.gamma
         weight = 1 / (ious_targets ** gamma + 1e-8)
-
+        #print(bbox_preds.view(-1, 4)[fg_masks])
+        #print(origin_preds.view(-1, 4)[fg_masks])
         iou_loss = self.iou_loss(bbox_preds.view(-1, 4)[fg_masks], reg_targets)
         iou_loss_weight = (weight * iou_loss.sum()) / (weight * iou_loss).sum()
         iou_loss_weight = iou_loss_weight.detach()
-
-        l1_loss = self.l1_loss(origin_preds.view(-1, 4)[fg_masks], l1_targets)
-        l1_weight = weight.unsqueeze(1).repeat(1, 4)
-        l1_weight = (l1_weight * l1_loss.sum()) / (l1_weight * l1_loss).sum()
-        l1_weight = l1_weight.detach()
+        if self.use_l1:
+           l1_loss = self.l1_loss(origin_preds.view(-1, 4)[fg_masks], l1_targets)
+           l1_weight = weight.unsqueeze(1).repeat(1, 4)
+           l1_weight = (l1_weight * l1_loss.sum()) / (l1_weight * l1_loss).sum()
+           l1_weight = l1_weight.detach()
 
 
         num_fg = max(num_fg, 1)

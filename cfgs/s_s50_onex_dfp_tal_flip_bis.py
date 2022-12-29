@@ -18,7 +18,7 @@ class Exp(MyExp):
         self.random_size = (50, 70)
         self.test_size = (600, 960)
         self.enable_mixup = False
-        self.enable_mosaic = False
+        self.enable_mosaic = True
         self.basic_lr_per_img = 0.001 / 64.0
 
         self.warmup_epochs = 1
@@ -31,7 +31,7 @@ class Exp(MyExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
         #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
-        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_no_mosaic_mixup'
+        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_no_mixup_mosaic'
         #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOwithaugmentation'
 
 
