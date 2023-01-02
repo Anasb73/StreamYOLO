@@ -59,7 +59,6 @@ class Exp(MyExp):
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, local_rank=0, cache_img=False):
         from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
         from caryle.streamyolo.StreamYOLO.exps.data.tal_flip_mosaicdetection import MosaicDetection
-        #from caryle.streamyolo.StreamYOLO.exps.data.mosaicdetection import MosaicDetection
         from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleTrainTransform
         from yolox.data import (
             YoloBatchSampler,
@@ -114,10 +113,8 @@ class Exp(MyExp):
         return train_loader
 
     def get_eval_loader(self, batch_size, is_distributed, testdev=False):
-        #from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
-        #from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleValTransform
-        from exps.dataset.still_argoversedataset import STILL_ARGOVERSEDataset
-        from exps.data.mosaicdetection import MosaicDetection
+        from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
+        from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleValTransform
         valdataset = ONE_ARGOVERSEDataset(
             data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse',
             json_file='val.json',
