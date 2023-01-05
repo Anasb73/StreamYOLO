@@ -17,7 +17,7 @@ class Exp(MyExp):
         self.input_size = (600, 960)  # (h,w)
         self.random_size = (50, 70)
         self.test_size = (600, 960)
-        self.enable_mixup = True
+        self.enable_mixup = False
         self.enable_mosaic = True
         self.basic_lr_per_img = 0.001 / 64.0
 
@@ -31,7 +31,7 @@ class Exp(MyExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
         #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
-        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_mixup_mosaic'
+        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_nomixupfp32'
         #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOwithaugmentation'
 
 
@@ -61,7 +61,6 @@ class Exp(MyExp):
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, local_rank=0, cache_img=False):
         from caryle.streamyolo.StreamYOLO.exps.dataset.tal_flip_one_future_argoversedataset import ONE_ARGOVERSEDataset
         from caryle.streamyolo.StreamYOLO.exps.data.tal_flip_mosaicdetection import MosaicDetection
-        #from caryle.streamyolo.StreamYOLO.exps.data.mosaicdetection import MosaicDetection
         from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleTrainTransform
         from yolox.data import (
             YoloBatchSampler,
