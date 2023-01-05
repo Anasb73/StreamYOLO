@@ -29,8 +29,8 @@ class Exp(MyExp):
 
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
-        #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
-        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained'
+        self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_sfp32'
+        #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained'
     def get_model(self):
         from caryle.streamyolo.StreamYOLO.exps.model.yolox import YOLOX
         from caryle.streamyolo.StreamYOLO.exps.model.dfp_pafpn import DFPPAFPN
