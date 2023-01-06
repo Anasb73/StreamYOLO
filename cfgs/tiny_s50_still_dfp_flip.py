@@ -30,7 +30,7 @@ class Exp(MyExp):
 
         #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
         #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_no_mosaic_mixup'
-        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLO_with_noaugmentation'
+        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLO_with_noaugmentationwithoutfp16'
 
 
     def get_model(self):
