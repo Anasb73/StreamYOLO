@@ -22,7 +22,7 @@ class Exp(MyExp):
         self.basic_lr_per_img = 0.001 / 64.0
 
         self.warmup_epochs = 1
-        self.max_epoch = 30
+        self.max_epoch = 50
         self.no_aug_epochs = 15
         self.eval_interval = 1
         self.train_ann = 'train.json'
@@ -31,7 +31,8 @@ class Exp(MyExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
 
         #self.output_dir = '/work1/gitlab-runner-docker-data/models/streamyolo/yolox_s'
-        self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_nomixupfp32'
+        #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOyolox_s_trained_with_aug_nomixupfp32'
+        self.output_dir = '/work1/gitlab-runner-docker-data/models/stream_yolo_updated0'
         #self.output_dir = '/work1/gitlab-runner-docker-data/streamYOLOwithaugmentation'
 
 
@@ -70,7 +71,7 @@ class Exp(MyExp):
         )
 
         dataset = ONE_ARGOVERSEDataset(
-            data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse',
+            data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse_updated',
             json_file=self.train_ann,
             name='train',
             img_size=self.input_size,
@@ -119,7 +120,7 @@ class Exp(MyExp):
         from caryle.streamyolo.StreamYOLO.exps.data.data_augment_flip import DoubleValTransform
 
         valdataset = ONE_ARGOVERSEDataset(
-            data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse',
+            data_dir='/work1/gitlab-runner-docker-data/datasets/isere/annotated/object_detection/data_argoverse_updated',
             json_file='val.json',
             name='val',
             img_size=self.test_size,
