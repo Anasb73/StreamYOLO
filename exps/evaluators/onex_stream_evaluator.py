@@ -189,10 +189,11 @@ class ONEX_COCOEvaluator:
                 label = self.dataloader.dataset.class_ids[int(cls[ind])]
 
                 #if int(img_id) in [15060,15061]:
-                # max_ids = max([x['id'] for x in eself.dataloader.dataset.coco.dataset["images"]])
-                #if int(img_id) in [max_ids -1, max_ids]: 
-                if int(img_id) in [34332,34333]:
-                    continue
+                max_ids = max([x['id'] for x in self.dataloader.dataset.coco.dataset["images"]])
+                if int(img_id) in [max_ids -1, max_ids]:
+                    continue 
+                # if int(img_id) in [34332,34333]:
+                #     continue
                 elif self.dataloader.dataset.coco.dataset['images'][int(img_id+1)]['fid'] == 0:
                     continue
                 elif self.dataloader.dataset.coco.dataset['images'][int(img_id)]['fid'] == 0:
